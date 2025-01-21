@@ -1,34 +1,36 @@
 ---
-- name: setup flask 
+- name: Setup Flask Application
   hosts: localhost
-  become: true 
-  
-  tasks: 
-  - name: Update package lists 
-    apt: 
-     update_cache: yes 
+  become: true
 
-  - name: Install pip3 
-    apt: 
-     name: python3-pip 
-     state: present 
-     
-  - name: Create a virtual environment
+  tasks:
+    - name: Update package lists
+      apt:
+        update_cache: yes
+
+    - name: Install required packages
+      apt:
+        name:
+          - python3-venv
+          - python3-pip
+          - python3-full
+        state: present
+
+    - name: Create a virtual environment
       command: python3 -m venv venv
       args:
         chdir: /home/ubuntu/gc
 
-  - name: Activate virtual environment and install Flask
+    - name: Activate virtual environment and install Flask
       shell: |
-        source venv/bin/activate
-        pip install Flask
+        source venv/bin/activate && pip install Flask
       args:
         chdir: /home/ubuntu/gc
+        executable: /bin/bash
 
-  - name: Install Flask 
-    pip: 
-     name: Flask 
-     state: present
-
-  - name: Execute python script 
-    command: python3 app.py &
+    - name: Run Flask application
+      shell: |
+        source venv/bin/activate && nohup python3 app.py &
+      args:
+        chdir: /home/ubuntu/gc
+        executable: /bin/bash
