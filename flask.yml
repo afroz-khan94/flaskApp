@@ -12,6 +12,18 @@
     apt: 
      name: python3-pip 
      state: present 
+     
+  - name: Create a virtual environment
+      command: python3 -m venv venv
+      args:
+        chdir: /home/ubuntu/gc
+
+  - name: Activate virtual environment and install Flask
+      shell: |
+        source venv/bin/activate
+        pip install Flask
+      args:
+        chdir: /home/ubuntu/gc
 
   - name: Install Flask 
     pip: 
